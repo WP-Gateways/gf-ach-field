@@ -28,7 +28,6 @@ class GF_Field_ACH extends GF_Field {
 			'description_setting',
 			'css_class_setting',
 			'input_placeholders_setting',
-			//'ach_account_type_choices_setting',
 		);
 	}
 

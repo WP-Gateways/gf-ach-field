@@ -28,3 +28,19 @@ function gf_ach_add_submission_data( $submission_data, $feed, $form, $entry ) {
 	return $submission_data;
 }
 add_action( 'gform_submission_data_pre_process_payment', 'gf_ach_add_submission_data', 10, 4 );
+
+function gf_ach_field_class( $css_class, $field, $form ) {
+	if( GFFormsModel::get_input_type( $field ) == 'ach' && ! GFCommon::is_ssl() ) {
+		$css_class .= ' gfield_creditcard_warning';
+	}
+	return $css_class;
+}
+add_filter( 'gform_field_css_class', 'gf_ach_field_class', 10, 3 );
+
+function gf_ach_field_content( $field_content, $field, $value, $no_idea, $form_id ) {
+	if( GFFormsModel::get_input_type( $field ) == 'ach' && ! GFCommon::is_ssl() && ! GFCommon::is_form_editor() && ! GFCommon::is_entry_detail() ) {
+		$field_content = "<div class='gfield_creditcard_warning_message'><span>" . esc_html__( 'This page is unsecured. Do not enter your real bank account details! Use this field only for testing purposes. ', 'gravityforms' ) . '</span></div>' . $field_content;
+	}
+	return $field_content;
+}
+add_filter( 'gform_field_content', 'gf_ach_field_content', 10, 5 );
