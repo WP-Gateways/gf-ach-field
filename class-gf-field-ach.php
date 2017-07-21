@@ -37,7 +37,7 @@ class GF_Field_ACH extends GF_Field {
 			'text'  => $this->get_form_editor_field_title()
 		);
 	}
-	
+
 	public function is_value_submission_empty( $form_id ) {
 		return false;
 	}
@@ -47,7 +47,7 @@ class GF_Field_ACH extends GF_Field {
 		$routing_number		= rgpost( 'input_' . $this->id . '_2' );
 		$account_type		= rgpost( 'input_' . $this->id . '_3' );
 
-		if ( $this->isRequired && ( empty( $account_number ) || empty( $routing_number ) || empty( $account_type ) ) ) { echo 'hello';
+		if ( $this->isRequired && ( empty( $account_number ) || empty( $routing_number ) || empty( $account_type ) ) ) {
 			$this->failed_validation  = true;
 			$this->validation_message = empty( $this->errorMessage ) ? esc_html__( 'Please enter your bank account information.', 'gf-ach-field' ) : $this->errorMessage;
 		} elseif ( ! empty( $account_number ) ) {
@@ -107,7 +107,7 @@ class GF_Field_ACH extends GF_Field {
 			$account_name       = esc_attr( rgget( $this->id . '.4', $value ) );
 		}
 
-		
+
 		$payment_methods = apply_filters( 'gform_payment_methods', array(), $this, $form_id );
 		$payment_options = '';
 		if ( is_array( $payment_methods ) ) {
@@ -138,7 +138,7 @@ class GF_Field_ACH extends GF_Field {
 									<label for='{$field_id}_1' id='{$field_id}_1_label' {$sub_label_class_attribute}>{$account_number_label}</label>
 								 </span>";
 		}
-		
+
 		$tabindex                = $this->get_tabindex();
 		$account_type_field_input = GFFormsModel::get_input( $this, $this->id . '.3' );
 		$account_type_options = $this->get_account_type_options( $account_tpe );
@@ -180,7 +180,7 @@ class GF_Field_ACH extends GF_Field {
                                  </span>";
 		}
 
-	
+
 		$tabindex              = $this->get_tabindex();
 		$account_name_field_input = GFFormsModel::get_input( $this, $this->id . '.4' );
 		$account_name_label       = rgar( $account_name_field_input, 'customLabel' ) != '' ? $account_name_field_input['customLabel'] : esc_html__( 'Account Holder Name', 'gf-ach-field' );
@@ -251,15 +251,15 @@ class GF_Field_ACH extends GF_Field {
 
 		return $this->sanitize_entry_value( $value, $form['id'] );
 	}
-	
+
 	public function get_account_type_choices() {
-		$options = apply_filters( 'gf_ach_account_type_choices', array( 
+		$options = apply_filters( 'gf_ach_account_type_choices', array(
 			'S' => __( 'Saving', 'gf-ach-field' ),
 			'C'	=> __( 'Checking', 'gf-ach-field' ),
 		) );
 		return $options;
 	}
-	
+
 	private function get_account_type_options( $selected, $placeholder = '' ) {
 		if ( empty( $placeholder ) ) {
 			$placeholder = esc_html__( 'Select', 'gf-ach-field' );
