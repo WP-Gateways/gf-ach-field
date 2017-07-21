@@ -10,7 +10,7 @@ class GF_Field_ACH extends GF_Field {
 	public $type = 'ach';
 
 	public function get_form_editor_field_title() {
-		return esc_attr__( 'ACH', 'gravityforms' );
+		return esc_attr__( 'ACH', 'gf-ach-field' );
 	}
 
 	function get_form_editor_field_settings() {
@@ -37,20 +37,28 @@ class GF_Field_ACH extends GF_Field {
 			'text'  => $this->get_form_editor_field_title()
 		);
 	}
+	
+	public function is_value_submission_empty( $form_id ) {
+		return false;
+	}
 
 	public function validate( $value, $form ) {
 		$account_number 	= rgpost( 'input_' . $this->id . '_1' );
 		$routing_number		= rgpost( 'input_' . $this->id . '_2' );
 		$account_type		= rgpost( 'input_' . $this->id . '_3' );
 
-		if ( $this->isRequired && ( empty( $account_number ) || empty( $routing_number ) || empty( $account_type ) ) ) {
+		if ( $this->isRequired && ( empty( $account_number ) || empty( $routing_number ) || empty( $account_type ) ) ) { echo 'hello';
 			$this->failed_validation  = true;
-			$this->validation_message = empty( $this->errorMessage ) ? esc_html__( 'Please enter your bank account information.', 'gravityforms' ) : $this->errorMessage;
+			$this->validation_message = empty( $this->errorMessage ) ? esc_html__( 'Please enter your bank account information.', 'gf-ach-field' ) : $this->errorMessage;
 		} elseif ( ! empty( $account_number ) ) {
 
 			if ( empty( $routing_number ) ) {
 				$this->failed_validation  = true;
-				$this->validation_message = esc_html__( "Please enter your bank account's routing number.", 'gravityforms' );
+				$this->validation_message = esc_html__( "Please enter your bank account's routing number.", 'gf-ach-field' );
+			}
+			if ( empty( $account_type ) ) {
+				$this->failed_validation  = true;
+				$this->validation_message = esc_html__( "Please select the account type.", 'gf-ach-field' );
 			}
 		}
 	}
@@ -114,8 +122,8 @@ class GF_Field_ACH extends GF_Field {
 		//account number fields
 		$tabindex                = $this->get_tabindex();
 		$account_number_field_input = GFFormsModel::get_input( $this, $this->id . '.1' );
-		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gravityforms' ) . "'" : '';
-		$account_number_label    = rgar( $account_number_field_input, 'customLabel' ) != '' ? $account_number_field_input['customLabel'] : esc_html__( 'Account Number', 'gravityforms' );
+		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
+		$account_number_label    = rgar( $account_number_field_input, 'customLabel' ) != '' ? $account_number_field_input['customLabel'] : esc_html__( 'Account Number', 'gf-ach-field' );
 		$account_number_label    = gf_apply_filters( array( 'gform_account_number', $form_id ), $account_number_label, $form_id );
 
 		$account_number_placeholder = $this->get_input_placeholder_attribute( $account_number_field_input );
@@ -134,7 +142,7 @@ class GF_Field_ACH extends GF_Field {
 		$tabindex                = $this->get_tabindex();
 		$account_type_field_input = GFFormsModel::get_input( $this, $this->id . '.3' );
 		$account_type_options = $this->get_account_type_options( $account_tpe );
-		$account_type_label    = rgar( $account_type_field_input, 'customLabel' ) != '' ? $account_type_field_input['customLabel'] : esc_html__( 'Account Type', 'gravityforms' );
+		$account_type_label    = rgar( $account_type_field_input, 'customLabel' ) != '' ? $account_type_field_input['customLabel'] : esc_html__( 'Account Type', 'gf-ach-field' );
 		$account_type_label    = gf_apply_filters( array( 'gform_account_type', $form_id ), $account_type_label, $form_id );
 		if ( $is_sub_label_above ) {
 			$account_type_field = "<span class='ginput_right{$class_suffix}' id='{$field_id}_3_container'>
@@ -155,8 +163,8 @@ class GF_Field_ACH extends GF_Field {
 
 		$tabindex                = $this->get_tabindex();
 		$routing_number_field_input = GFFormsModel::get_input( $this, $this->id . '.2' );
-		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gravityforms' ) . "'" : '';
-		$routing_number_label    = rgar( $routing_number_field_input, 'customLabel' ) != '' ? $routing_number_field_input['customLabel'] : esc_html__( 'Routing Number', 'gravityforms' );
+		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
+		$routing_number_label    = rgar( $routing_number_field_input, 'customLabel' ) != '' ? $routing_number_field_input['customLabel'] : esc_html__( 'Routing Number', 'gf-ach-field' );
 		$routing_number_label    = gf_apply_filters( array( 'gform_routing_number', $form_id ), $routing_number_label, $form_id );
 
 		$routing_number_placeholder = $this->get_input_placeholder_attribute( $routing_number_field_input );
@@ -175,7 +183,7 @@ class GF_Field_ACH extends GF_Field {
 	
 		$tabindex              = $this->get_tabindex();
 		$account_name_field_input = GFFormsModel::get_input( $this, $this->id . '.4' );
-		$account_name_label       = rgar( $account_name_field_input, 'customLabel' ) != '' ? $account_name_field_input['customLabel'] : esc_html__( 'Account Holder Name', 'gravityforms' );
+		$account_name_label       = rgar( $account_name_field_input, 'customLabel' ) != '' ? $account_name_field_input['customLabel'] : esc_html__( 'Account Holder Name', 'gf-ach-field' );
 		$account_name_label       = gf_apply_filters( array( 'gform_account_name', $form_id ), $account_name_label, $form_id );
 
 		$account_name_placeholder = $this->get_input_placeholder_attribute( $account_name_field_input );
@@ -246,15 +254,15 @@ class GF_Field_ACH extends GF_Field {
 	
 	public function get_account_type_choices() {
 		$options = apply_filters( 'gf_ach_account_type_choices', array( 
-			'S' => __( 'Saving', 'gravityforms' ),
-			'C'	=> __( 'Checking', 'gravityforms' ),
+			'S' => __( 'Saving', 'gf-ach-field' ),
+			'C'	=> __( 'Checking', 'gf-ach-field' ),
 		) );
 		return $options;
 	}
 	
 	private function get_account_type_options( $selected, $placeholder = '' ) {
 		if ( empty( $placeholder ) ) {
-			$placeholder = esc_html__( 'Select', 'gravityforms' );
+			$placeholder = esc_html__( 'Select', 'gf-ach-field' );
 		}
 		$options = $this->get_account_type_choices();
 		$str = "<option value=''>{$placeholder}</option>";
