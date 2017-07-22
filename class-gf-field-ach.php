@@ -141,7 +141,7 @@ class GF_Field_ACH extends GF_Field {
 
 		$tabindex                = $this->get_tabindex();
 		$account_type_field_input = GFFormsModel::get_input( $this, $this->id . '.3' );
-		$account_type_options = $this->get_account_type_options( $account_tpe );
+		$account_type_options = $this->get_account_type_options( $account_type );
 		$account_type_label    = rgar( $account_type_field_input, 'customLabel' ) != '' ? $account_type_field_input['customLabel'] : esc_html__( 'Account Type', 'gf-ach-field' );
 		$account_type_label    = gf_apply_filters( array( 'gform_account_type', $form_id ), $account_type_label, $form_id );
 		if ( $is_sub_label_above ) {
@@ -260,14 +260,14 @@ class GF_Field_ACH extends GF_Field {
 		return $options;
 	}
 
-	private function get_account_type_options( $selected, $placeholder = '' ) {
+	private function get_account_type_options( $selected_value, $placeholder = '' ) {
 		if ( empty( $placeholder ) ) {
 			$placeholder = esc_html__( 'Select', 'gf-ach-field' );
 		}
 		$options = $this->get_account_type_choices();
 		$str = "<option value=''>{$placeholder}</option>";
 		foreach ( $options as $value => $label ) {
-			$selected = $selected  == $value ? "selected='selected'" : '';
+			$selected = $selected_value  == $value ? "selected='selected'" : '';
 			$str .= "<option value='{$value}' {$selected}>{$label}</option>";
 		}
 
