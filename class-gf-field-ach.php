@@ -68,8 +68,8 @@ class GF_Field_ACH extends GF_Field {
 		if ( $get_from_post_global_var ) {
 			$value[ $this->id . '.1' ] = $this->get_input_value_submission( 'input_' . $this->id . '_1', rgar( $this->inputs[0], 'name' ), $field_values, true );
 			$value[ $this->id . '.2' ] = $this->get_input_value_submission( 'input_' . $this->id . '_2', rgar( $this->inputs[1], 'name' ), $field_values, true );
-			$value[ $this->id . '.3' ] = $this->get_input_value_submission( 'input_' . $this->id . '_3', rgar( $this->inputs[3], 'name' ), $field_values, true );
-			$value[ $this->id . '.4' ] = $this->get_input_value_submission( 'input_' . $this->id . '_4', rgar( $this->inputs[4], 'name' ), $field_values, true );
+			$value[ $this->id . '.3' ] = $this->get_input_value_submission( 'input_' . $this->id . '_3', rgar( $this->inputs[2], 'name' ), $field_values, true );
+			$value[ $this->id . '.4' ] = $this->get_input_value_submission( 'input_' . $this->id . '_4', rgar( $this->inputs[3], 'name' ), $field_values, true );
 		} else {
 			$value = $this->get_input_value_submission( 'input_' . $this->id, $this->inputName, $field_values, $get_from_post_global_var );
 		}
@@ -100,6 +100,11 @@ class GF_Field_ACH extends GF_Field {
 		$account_type	  = '';
 		$autocomplete     = RGFormsModel::is_html5_enabled() ? "autocomplete='off'" : '';
 
+		$onchange	= '';
+		$onkeyup 	= '';
+		$onchange 	= '';
+		$onkeyup 	= '';
+		
 		if ( is_array( $value ) ) {
 			$account_number     = esc_attr( rgget( $this->id . '.1', $value ) );
 			$routing_number     = esc_attr( rgget( $this->id . '.2', $value ) );
