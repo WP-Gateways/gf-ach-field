@@ -4,7 +4,6 @@ if ( ! class_exists( 'GFForms' ) ) {
 	die();
 }
 
-
 class GF_Field_ACH extends GF_Field {
 
 	public $type = 'ach';
@@ -89,7 +88,6 @@ class GF_Field_ACH extends GF_Field {
 		$disabled_text = $is_form_editor ? "disabled='disabled'" : '';
 		$class_suffix  = $is_entry_detail ? '_admin' : '';
 
-
 		$form_sub_label_placement  = rgar( $form, 'subLabelPlacement' );
 		$field_sub_label_placement = $this->subLabelPlacement;
 		$is_sub_label_above        = $field_sub_label_placement == 'above' || ( empty( $field_sub_label_placement ) && $form_sub_label_placement == 'above' );
@@ -102,16 +100,13 @@ class GF_Field_ACH extends GF_Field {
 
 		$onchange	= '';
 		$onkeyup 	= '';
-		$onchange 	= '';
-		$onkeyup 	= '';
-		
+
 		if ( is_array( $value ) ) {
 			$account_number     = esc_attr( rgget( $this->id . '.1', $value ) );
 			$routing_number     = esc_attr( rgget( $this->id . '.2', $value ) );
 			$account_type	    = esc_attr( rgget( $this->id . '.3', $value ) );
 			$account_name       = esc_attr( rgget( $this->id . '.4', $value ) );
 		}
-
 
 		$payment_methods = apply_filters( 'gform_payment_methods', array(), $this, $form_id );
 		$payment_options = '';
@@ -165,7 +160,6 @@ class GF_Field_ACH extends GF_Field {
                                  </span>";
 		}
 
-
 		$tabindex                = $this->get_tabindex();
 		$routing_number_field_input = GFFormsModel::get_input( $this, $this->id . '.2' );
 		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
@@ -184,7 +178,6 @@ class GF_Field_ACH extends GF_Field {
                                     <label for='{$field_id}_2' id='{$field_id}_2_label' {$sub_label_class_attribute}>{$routing_number_label}</label>
                                  </span>";
 		}
-
 
 		$tabindex              = $this->get_tabindex();
 		$account_name_field_input = GFFormsModel::get_input( $this, $this->id . '.4' );
@@ -259,7 +252,7 @@ class GF_Field_ACH extends GF_Field {
 
 	public function get_account_type_choices() {
 		$options = apply_filters( 'gf_ach_account_type_choices', array(
-			'S' => __( 'Saving', 'gf-ach-field' ),
+			'S' => __( 'Savings', 'gf-ach-field' ),
 			'C'	=> __( 'Checking', 'gf-ach-field' ),
 		) );
 		return $options;
@@ -278,7 +271,6 @@ class GF_Field_ACH extends GF_Field {
 
 		return $str;
 	}
-
 
 }
 
