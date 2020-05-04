@@ -5,8 +5,8 @@ Tags: Gravity Forms ACH, ACH, eCheck, payment gateway, Gravity Forms, Gravity Fo
 Plugin URI: https://wpgateways.com/products/gravity-forms-ach-echeck-payments/  
 Author URI: https://wpgateways.com  
 Requires at least: 4.0  
-Tested up to: 5.3  
-Stable tag: 1.0.0  
+Tested up to: 5.4  
+Stable tag: 1.0.1  
 License: GNU General Public License v3.0  
 License URI: http://www.gnu.org/licenses/gpl-3.0.html 
 
@@ -44,7 +44,7 @@ Disclaimer: This plugin is not affiliated with or supported by Gravity Forms. Al
 
 == Installation ==
 
-1. Upload `gravityforms-ach-field` folder/directory to the `/wp-content/plugins/` directory
+1. Upload `gf-ach-field` folder/directory to the `/wp-content/plugins/` directory
 2. Activate the plugin (WordPress -> Plugins).
 3. Now go to the forms page (WordPress -> Forms) and create/edit a form.
 4. Find "ACH" type field under "Pricing Fields" section and setup condition and labels if required.
@@ -53,6 +53,10 @@ Disclaimer: This plugin is not affiliated with or supported by Gravity Forms. Al
 
 
 == Changelog ==
+
+= 1.0.1 =
+
+* Made eCheck details more descriptive on entry pages
 
 = 1.0.0 =
 

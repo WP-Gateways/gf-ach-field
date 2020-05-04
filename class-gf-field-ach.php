@@ -206,13 +206,15 @@ class GF_Field_ACH extends GF_Field {
 	}
 
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
-
 		if ( is_array( $value ) ) {
-			$account_number = trim( rgget( $this->id . '.1', $value ) );
-			$account_type   = trim( rgget( $this->id . '.4', $value ) );
-			$separator   = $format == 'html' ? '<br/>' : "\n";
+            $separator   = $format == 'html' ? '<br/>' : "\n";
+			$account_number = esc_html__( 'Account Number', 'gf-ach-field' ) . ': ' . trim( rgget( $this->id . '.1', $value ) );
+			$routing_number = rgget( $this->id . '.2', $value ) ? ( $separator . esc_html__( 'Routing Number', 'gf-ach-field' ) . ': ' . trim( rgget( $this->id . '.2', $value ) ) ) : '';
+			$account_type   = trim( rgget( $this->id . '.3', $value ) );
+            $options = $this->get_account_type_choices();
+            $account_type = esc_html__( 'Account Type', 'gf-ach-field' ) . ': ' . ( rgar( $options, $account_type ) ? rgar( $options, $account_type ) : $account_type );
 
-			return empty( $account_number ) ? '' : $account_type . $separator . $account_number;
+			return empty( $account_number ) ? '' : $account_type . $separator . $account_number . $routing_number;
 		} else {
 			return '';
 		}
@@ -222,7 +224,7 @@ class GF_Field_ACH extends GF_Field {
 		$inputs = array();
 		// only store account type and number input values
 		foreach ( $this->inputs as $input ) {
-			if ( in_array( $input['id'], array( $this->id . '.1', $this->id . '.3' ) ) ) {
+			if ( in_array( $input['id'], array( $this->id . '.1', $this->id . '.2', $this->id . '.3' ) ) ) {
 				$inputs[] = $input;
 			}
 		}
@@ -234,7 +236,7 @@ class GF_Field_ACH extends GF_Field {
 
 		//saving last 4 digits of account number
 		list( $input_token, $field_id_token, $input_id ) = rgexplode( '_', $input_name, 3 );
-		if ( $input_id == '1' ) {
+		if ( $input_id == '1' || $input_id == '2' ) {
 			$value              = str_replace( ' ', '', $value );
 			$card_number_length = strlen( $value );
 			$value              = substr( $value, - 4, 4 );

@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms ACH Field Type
 Plugin URI: https://wpgateways.com/products/gravity-forms-ach-echeck-payments/
 Description: Adds and ACH field type to Gravity Forms just like a credit card type field
-Version: 1.0.0
+Version: 1.0.1
 Author: WP Gateways
 Author URI: https://wpgateways.com
 Text Domain: gf-ach-field
