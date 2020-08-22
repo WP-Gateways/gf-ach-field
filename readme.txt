@@ -5,7 +5,7 @@ Tags: Gravity Forms ACH, ACH, eCheck, payment gateway, Gravity Forms, Gravity Fo
 Plugin URI: https://wpgateways.com/products/gravity-forms-ach-echeck-payments/  
 Author URI: https://wpgateways.com  
 Requires at least: 4.0  
-Tested up to: 5.4  
+Tested up to: 5.5  
 Stable tag: 1.0.1  
 License: GNU General Public License v3.0  
 License URI: http://www.gnu.org/licenses/gpl-3.0.html 
@@ -34,6 +34,7 @@ The plugins currently compatible with the ACH field add-on are (more to be added
 1. [Authorize.Net Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/authorize-net-gateway-gravity-forms/).
 2. [USAePay Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/usaepay-gateway-gravity-forms/).
 3. [BluePay Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/bluepay-gateway-gravity-forms/).
+3. [NMI Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/network-merchants-nmi-gateway-gravity-forms/).
 4. [accept.blue Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/accept-blue-gateway-gravity-forms/).
 
 Visit the [plugin page](https://wpgateways.com/products/gravity-forms-ach-echeck-payments/) for more details. Contributors are welcome to send pull requests via [Bitbucket repository](https://bitbucket.org/gateways/gf-ach-field).
