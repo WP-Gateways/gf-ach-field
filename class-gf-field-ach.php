@@ -10,7 +10,7 @@ class GF_Field_ACH extends GF_Field {
 
     public function __construct( $data = array() ) {
         parent::__construct( $data );
-        $this->_has_settings_renderer  = version_compare( GFCommon::$version, '2.5-beta', '>=' );;
+        $this->_has_settings_renderer  = version_compare( GFCommon::$version, '2.5-beta', '>=' );
     }
 
 	public function get_form_editor_field_title() {
@@ -33,7 +33,7 @@ class GF_Field_ACH extends GF_Field {
      *
      * This could be an icon url or a gform-icon class.
      *
-     * @since 2.5
+     * @since 1.0.2
      *
      * @return string
      */
