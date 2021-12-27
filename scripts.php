@@ -36,11 +36,3 @@ function gf_ach_field_class( $css_class, $field, $form ) {
 	return $css_class;
 }
 add_filter( 'gform_field_css_class', 'gf_ach_field_class', 10, 3 );
-
-function gf_ach_field_content( $field_content, $field, $value, $no_idea, $form_id ) {
-	if( GFFormsModel::get_input_type( $field ) == 'ach' && ! GFCommon::is_ssl() && ! GFCommon::is_form_editor() && ! GFCommon::is_entry_detail() ) {
-		$field_content = "<div class='gfield_creditcard_warning_message'><span>" . esc_html__( 'This page is unsecured. Do not enter your real bank account details! Use this field only for testing purposes. ', 'gf-ach-field' ) . '</span></div>' . $field_content;
-	}
-	return $field_content;
-}
-add_filter( 'gform_field_content', 'gf_ach_field_content', 10, 5 );

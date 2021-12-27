@@ -8,9 +8,79 @@ class GF_Field_ACH extends GF_Field {
 
 	public $type = 'ach';
 
+    public function __construct( $data = array() ) {
+        parent::__construct( $data );
+        $this->_has_settings_renderer  = version_compare( GFCommon::$version, '2.5-beta', '>=' );
+    }
+
 	public function get_form_editor_field_title() {
 		return esc_attr__( 'ACH', 'gf-ach-field' );
 	}
+
+    /**
+     * Returns the field's form editor description.
+     *
+     * @since 1.0.2
+     *
+     * @return string
+     */
+    public function get_form_editor_field_description() {
+        return esc_attr__( 'Allows users to enter bank account information.', 'gf-ach-field' );
+    }
+
+    /**
+     * Returns the field's form editor icon.
+     *
+     * This could be an icon url or a gform-icon class.
+     *
+     * @since 1.0.2
+     *
+     * @return string
+     */
+    public function get_form_editor_field_icon() {
+        return GF_ACH_PLUGIN_URL . '/images/icon.png';
+    }
+
+    /**
+     * Defines the IDs of required inputs.
+     *
+     * @since 1.0.2
+     *
+     * @return string[]
+     */
+    public function get_required_inputs_ids() {
+        return array( '1', '2', '3' );
+    }
+
+    /**
+     * Generates an array that contains aria-describedby attribute for each input.
+     *
+     * Depending on each input's validation state, aria-describedby takes the value of the validation message container ID, the description only or nothing.
+     *
+     * @since 1.0.2
+     *
+     * @param array        $required_inputs_ids IDs of required field inputs.
+     * @param array|string $values              Inputs values.
+     *
+     * @return array
+     */
+    public function get_inputs_describedby_attributes( $required_inputs_ids, $values ) {
+
+        $describedby_attributes = array();
+        $warning_container_id   = ! GFCommon::is_ssl() && ! ( $this->is_form_editor() || $this->is_entry_detail() ) ? "field_{$this->formId}_{$this->id}_ach_warning_message" : '';
+
+        foreach ( $this->inputs as $input ) {
+            $input_id    = str_replace( $this->id . '.', '', $input['id'] );
+            $input_value = GFForms::get( $input['id'], $values );
+            if ( ! empty( $_POST[ 'is_submit_' . $this->formId ] ) && $this->isRequired && in_array( $input_id, $required_inputs_ids ) &&  empty( $input_value ) ) {
+                $describedby_attributes[ $input_id ] = "aria-describedby='validation_message_{$this->formId}_{$this->id} {$warning_container_id}'";
+            } else {
+                $describedby_attributes[ $input_id ] = empty( $warning_container_id ) ? '' : "aria-describedby='{$warning_container_id}'";
+            }
+        }
+
+        return $describedby_attributes;
+    }
 
 	function get_form_editor_field_settings() {
 		return array(
@@ -61,6 +131,54 @@ class GF_Field_ACH extends GF_Field {
 			}
 		}
 	}
+
+    /**
+     * Returns the HTML tag for the field container.
+     *
+     * @since 1.1.2
+     *
+     * @param array $form The current Form object.
+     *
+     * @return string
+     */
+    public function get_field_container_tag( $form ) {
+
+        if ( GFCommon::is_legacy_markup_enabled( $form ) ) {
+            return parent::get_field_container_tag( $form );
+        }
+
+        return 'fieldset';
+
+    }
+
+    /**
+     * Displays an insecure page warning below the field content.
+     *
+     * @since 1.1.2
+     *
+     * @param string|array $value                The field value. From default/dynamic population, $_POST, or a resumed incomplete submission.
+     * @param bool         $force_frontend_label Should the frontend label be displayed in the admin even if an admin label is configured.
+     * @param array        $form                 The Form Object currently being processed.
+     *
+     * @return string
+     */
+    public function get_field_content( $value, $force_frontend_label, $form ) {
+
+        $is_form_editor  = GFCommon::is_form_editor();
+        $is_entry_detail = GFCommon::is_entry_detail();
+        $is_admin        = $is_form_editor || $is_entry_detail;
+
+        // Get existing field content.
+        $field_content = parent::get_field_content( $value, $force_frontend_label, $form );
+
+        // If SSL is not used, display warning message.
+        if ( ! GFCommon::is_ssl() && ! $is_admin ) {
+            $field_content = "<div class='gfield_creditcard_warning_message' id='field_{$form['id']}_{$this->id}_ach_warning_message'><span>" . esc_html__( 'This page is unsecured. Do not enter a real bank account details! Use this field only for testing purposes. ', 'gravityforms' ) . '</span></div>' . $field_content;
+        }
+
+        return $field_content;
+
+    }
 
 	public function get_value_submission( $field_values, $get_from_post_global_var = true ) {
 
@@ -119,7 +237,13 @@ class GF_Field_ACH extends GF_Field {
 		$checked           = rgpost( 'gform_payment_method' ) == 'ach' || rgempty( 'gform_payment_method' ) ? "checked='checked'" : '';
 		$card_radio_button = empty( $payment_options ) ? '' : "<input type='radio' name='gform_payment_method' id='gform_payment_method_ach' value='ach' onclick='gformToggleACH();' onkeypress='gformToggleACH();' {$checked}/>";
 
-		//account number fields
+        // Aria attributes.
+        $account_number_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '1' ) : '';
+        $routing_number_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '2' ) : '';
+        $account_type_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '3' ) : '';
+        $account_name_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '4' ) : '';
+
+        //account number fields
 		$tabindex                = $this->get_tabindex();
 		$account_number_field_input = GFFormsModel::get_input( $this, $this->id . '.1' );
 		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
@@ -130,11 +254,11 @@ class GF_Field_ACH extends GF_Field {
 		if ( $is_sub_label_above ) {
 			$account_field = "<span class='ginput_left{$class_suffix}' id='{$field_id}_1_container' >
 									<label for='{$field_id}_1' id='{$field_id}_1_label' {$sub_label_class_attribute}>{$account_number_label}</label>
-									<input type='text' name='input_{$id}.1' id='{$field_id}_1' value='{$account_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$account_number_placeholder}/>
+									<input type='text' name='input_{$id}.1' id='{$field_id}_1' value='{$account_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$account_number_placeholder} {$account_number_aria_attributes}/>
 								 </span>";
 		} else {
 			$account_field = "<span class='ginput_left{$class_suffix}' id='{$field_id}_1_container' >
-									<input type='text' name='input_{$id}.1' id='{$field_id}_1' value='{$account_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$account_number_placeholder}/>
+									<input type='text' name='input_{$id}.1' id='{$field_id}_1' value='{$account_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$account_number_placeholder} {$account_number_aria_attributes}/>
 									<label for='{$field_id}_1' id='{$field_id}_1_label' {$sub_label_class_attribute}>{$account_number_label}</label>
 								 </span>";
 		}
@@ -147,13 +271,13 @@ class GF_Field_ACH extends GF_Field {
 		if ( $is_sub_label_above ) {
 			$account_type_field = "<span class='ginput_right{$class_suffix}' id='{$field_id}_3_container'>
                                     <label for='{$field_id}_3' id='{$field_id}_3_label' {$sub_label_class_attribute}>{$account_type_label}</label>
-									<select name='input_{$id}.3' id='{$field_id}_3' {$tabindex} {$disabled_text} class='ginput_card_expiration'>
+									<select name='input_{$id}.3' id='{$field_id}_3' {$tabindex} {$disabled_text} class='ginput_card_expiration' {$account_type_aria_attributes}>
 										{$account_type_options}
 									</select>
                                  </span>";
 		} else {
 			$account_type_field = "<span class='ginput_right{$class_suffix}' id='{$field_id}_3_container'>
-                                    <select name='input_{$id}.3' id='{$field_id}_3' {$tabindex} {$disabled_text} class='ginput_card_expiration'>
+                                    <select name='input_{$id}.3' id='{$field_id}_3' {$tabindex} {$disabled_text} class='ginput_card_expiration' {$account_type_aria_attributes}>
 										{$account_type_options}
 									</select>
                                     <label for='{$field_id}_3' id='{$field_id}_3_label' {$sub_label_class_attribute}>{$account_type_label}</label>
@@ -170,11 +294,11 @@ class GF_Field_ACH extends GF_Field {
 		if ( $is_sub_label_above ) {
 			$routing_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_2_container' >
                                     <label for='{$field_id}_2' id='{$field_id}_2_label' {$sub_label_class_attribute}>{$routing_number_label}</label>
-                                    <input type='text' name='input_{$id}.2' id='{$field_id}_2' value='{$routing_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$routing_number_placeholder}/>
+                                    <input type='text' name='input_{$id}.2' id='{$field_id}_2' value='{$routing_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$routing_number_placeholder} {$routing_number_aria_attributes}/>
                                  </span>";
 		} else {
 			$routing_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_2_container' >
-                                    <input type='text' name='input_{$id}.2' id='{$field_id}_2' value='{$routing_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$routing_number_placeholder}/>
+                                    <input type='text' name='input_{$id}.2' id='{$field_id}_2' value='{$routing_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$routing_number_placeholder} {$routing_number_aria_attributes}/>
                                     <label for='{$field_id}_2' id='{$field_id}_2_label' {$sub_label_class_attribute}>{$routing_number_label}</label>
                                  </span>";
 		}
@@ -188,11 +312,11 @@ class GF_Field_ACH extends GF_Field {
 		if ( $is_sub_label_above ) {
 			$account_name_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_4_container'>
                                             <label for='{$field_id}_4' id='{$field_id}_4_label' {$sub_label_class_attribute}>{$account_name_label}</label>
-                                            <input type='text' name='input_{$id}.4' id='{$field_id}_4' value='{$account_name}' {$tabindex} {$disabled_text} {$account_name_placeholder}/>
+                                            <input type='text' name='input_{$id}.4' id='{$field_id}_4' value='{$account_name}' {$tabindex} {$disabled_text} {$account_name_placeholder} {$account_name_aria_attributes}/>
                                         </span>";
 		} else {
 			$account_name_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_4_container'>
-                                            <input type='text' name='input_{$id}.4' id='{$field_id}_4' value='{$account_name}' {$tabindex} {$disabled_text} {$account_name_placeholder}/>
+                                            <input type='text' name='input_{$id}.4' id='{$field_id}_4' value='{$account_name}' {$tabindex} {$disabled_text} {$account_name_placeholder} {$account_name_aria_attributes}/>
                                             <label for='{$field_id}_4' id='{$field_id}_4_label' {$sub_label_class_attribute}>{$account_name_label}</label>
                                         </span>";
 		}
