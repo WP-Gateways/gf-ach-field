@@ -2,7 +2,7 @@
 Contributors: mohsinoffline  
 Donate link: https://wpgateways.com/contact-us/send-payment/  
 Tags: Gravity Forms ACH, ACH, eCheck, payment gateway, Gravity Forms, Gravity Forms payment gateway, payment forms  
-Plugin URI: https://wpgateways.com/products/gravity-forms-ach-echeck-payments/  
+Plugin URI: https://wpgateways.com/gravity-forms-ach-echeck-payments/  
 Author URI: https://wpgateways.com  
 Requires at least: 4.0  
 Tested up to: 5.9  
@@ -39,7 +39,7 @@ The plugins currently compatible with the ACH field add-on are (more to be added
 6. [accept.blue Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/accept-blue-gateway-gravity-forms/).
 7. [iATS Payments Gateway For Gravity Forms (Advanced Version)](https://wpgateways.com/products/iats-payments-gateway-gravity-forms/).
 
-Visit the [plugin page](https://wpgateways.com/products/gravity-forms-ach-echeck-payments/) for more details. Contributors are welcome to send pull requests via [Bitbucket repository](https://bitbucket.org/gateways/gf-ach-field).
+Visit the [plugin page](https://wpgateways.com/gravity-forms-ach-echeck-payments/) for more details. Contributors are welcome to send pull requests via [Bitbucket repository](https://bitbucket.org/gateways/gf-ach-field).
 
 For custom integration with your WordPress website, please [contact us here](https://wpgateways.com/support/custom-payment-gateway-integration/).
 
