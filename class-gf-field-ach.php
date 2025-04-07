@@ -173,7 +173,7 @@ class GF_Field_ACH extends GF_Field {
 
         // If SSL is not used, display warning message.
         if ( ! GFCommon::is_ssl() && ! $is_admin ) {
-            $field_content = "<div class='gfield_creditcard_warning_message' id='field_{$form['id']}_{$this->id}_ach_warning_message'><span>" . esc_html__( 'This page is unsecured. Do not enter a real bank account details! Use this field only for testing purposes. ', 'gravityforms' ) . '</span></div>' . $field_content;
+            $field_content = "<div class='gfield_description gfield_validation_message gfield_creditcard_warning_message' id='field_{$form['id']}_{$this->id}_ach_warning_message'><span>" . esc_html__( 'This page is unsecured. Do not enter a real bank account details! Use this field only for testing purposes. ', 'gravityforms' ) . '</span></div>' . $field_content;
         }
 
         return $field_content;
@@ -209,12 +209,12 @@ class GF_Field_ACH extends GF_Field {
 		$form_sub_label_placement  = rgar( $form, 'subLabelPlacement' );
 		$field_sub_label_placement = $this->subLabelPlacement;
 		$is_sub_label_above        = $field_sub_label_placement == 'above' || ( empty( $field_sub_label_placement ) && $form_sub_label_placement == 'above' );
-		$sub_label_class_attribute = $field_sub_label_placement == 'hidden_label' ? "class='hidden_sub_label screen-reader-text'" : '';
+		$sub_label_class          = $field_sub_label_placement == 'hidden_label' ? "hidden_sub_label screen-reader-text" : '';
 
 		$account_number   = '';
 		$routing_number   = '';
 		$account_type	  = '';
-		$autocomplete     = RGFormsModel::is_html5_enabled() ? "autocomplete='off'" : '';
+		$autocomplete     = "autocomplete='off'";
 
 		$onchange	= '';
 		$onkeyup 	= '';
@@ -238,28 +238,28 @@ class GF_Field_ACH extends GF_Field {
 		$card_radio_button = empty( $payment_options ) ? '' : "<input type='radio' name='gform_payment_method' id='gform_payment_method_ach' value='ach' onclick='gformToggleACH();' onkeypress='gformToggleACH();' {$checked}/>";
 
         // Aria attributes.
-        $account_number_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '1' ) : '';
-        $routing_number_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '2' ) : '';
-        $account_type_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '3' ) : '';
-        $account_name_aria_attributes = $this->_has_settings_renderer ? $this->get_aria_attributes( $value, '4' ) : '';
+        $account_number_aria_attributes = $this->get_aria_attributes( $value, '1' );
+        $routing_number_aria_attributes = $this->get_aria_attributes( $value, '2' );
+        $account_type_aria_attributes = $this->get_aria_attributes( $value, '3' );
+        $account_name_aria_attributes = $this->get_aria_attributes( $value, '4' );
 
         //account number fields
 		$tabindex                = $this->get_tabindex();
 		$account_number_field_input = GFFormsModel::get_input( $this, $this->id . '.1' );
-		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
+		$html5_output            = ! is_admin() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
 		$account_number_label    = rgar( $account_number_field_input, 'customLabel' ) != '' ? $account_number_field_input['customLabel'] : esc_html__( 'Account Number', 'gf-ach-field' );
 		$account_number_label    = gf_apply_filters( array( 'gform_account_number', $form_id ), $account_number_label, $form_id );
 
 		$account_number_placeholder = $this->get_input_placeholder_attribute( $account_number_field_input );
 		if ( $is_sub_label_above ) {
-			$account_field = "<span class='ginput_left{$class_suffix}' id='{$field_id}_1_container' >
-									<label for='{$field_id}_1' id='{$field_id}_1_label' {$sub_label_class_attribute}>{$account_number_label}</label>
+			$account_field = "<span class='ginput_left{$class_suffix} ginput_address_city  gform-grid-col' id='{$field_id}_1_container' >
+									<label for='{$field_id}_1' id='{$field_id}_1_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$account_number_label}</label>
 									<input type='text' name='input_{$id}.1' id='{$field_id}_1' value='{$account_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$account_number_placeholder} {$account_number_aria_attributes}/>
 								 </span>";
 		} else {
-			$account_field = "<span class='ginput_left{$class_suffix}' id='{$field_id}_1_container' >
+			$account_field = "<span class='ginput_left{$class_suffix} ginput_address_city  gform-grid-col' id='{$field_id}_1_container' >
 									<input type='text' name='input_{$id}.1' id='{$field_id}_1' value='{$account_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$account_number_placeholder} {$account_number_aria_attributes}/>
-									<label for='{$field_id}_1' id='{$field_id}_1_label' {$sub_label_class_attribute}>{$account_number_label}</label>
+									<label for='{$field_id}_1' id='{$field_id}_1_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$account_number_label}</label>
 								 </span>";
 		}
 
@@ -269,37 +269,37 @@ class GF_Field_ACH extends GF_Field {
 		$account_type_label    = rgar( $account_type_field_input, 'customLabel' ) != '' ? $account_type_field_input['customLabel'] : esc_html__( 'Account Type', 'gf-ach-field' );
 		$account_type_label    = gf_apply_filters( array( 'gform_account_type', $form_id ), $account_type_label, $form_id );
 		if ( $is_sub_label_above ) {
-			$account_type_field = "<span class='ginput_right{$class_suffix}' id='{$field_id}_3_container'>
-                                    <label for='{$field_id}_3' id='{$field_id}_3_label' {$sub_label_class_attribute}>{$account_type_label}</label>
+			$account_type_field = "<span class='ginput_right{$class_suffix} ginput_address_country gform-grid-col' id='{$field_id}_3_container'>
+                                    <label for='{$field_id}_3' id='{$field_id}_3_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$account_type_label}</label>
 									<select name='input_{$id}.3' id='{$field_id}_3' {$tabindex} {$disabled_text} class='ginput_card_expiration' {$account_type_aria_attributes}>
 										{$account_type_options}
 									</select>
                                  </span>";
 		} else {
-			$account_type_field = "<span class='ginput_right{$class_suffix}' id='{$field_id}_3_container'>
+			$account_type_field = "<span class='ginput_right{$class_suffix} ginput_address_country gform-grid-col' id='{$field_id}_3_container'>
                                     <select name='input_{$id}.3' id='{$field_id}_3' {$tabindex} {$disabled_text} class='ginput_card_expiration' {$account_type_aria_attributes}>
 										{$account_type_options}
 									</select>
-                                    <label for='{$field_id}_3' id='{$field_id}_3_label' {$sub_label_class_attribute}>{$account_type_label}</label>
+                                    <label for='{$field_id}_3' id='{$field_id}_3_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$account_type_label}</label>
                                  </span>";
 		}
 
 		$tabindex                = $this->get_tabindex();
 		$routing_number_field_input = GFFormsModel::get_input( $this, $this->id . '.2' );
-		$html5_output            = ! is_admin() && GFFormsModel::is_html5_enabled() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
+		$html5_output            = ! is_admin() ? "pattern='[0-9]*' title='" . esc_attr__( 'Only digits are allowed', 'gf-ach-field' ) . "'" : '';
 		$routing_number_label    = rgar( $routing_number_field_input, 'customLabel' ) != '' ? $routing_number_field_input['customLabel'] : esc_html__( 'Routing Number', 'gf-ach-field' );
 		$routing_number_label    = gf_apply_filters( array( 'gform_routing_number', $form_id ), $routing_number_label, $form_id );
 
 		$routing_number_placeholder = $this->get_input_placeholder_attribute( $routing_number_field_input );
 		if ( $is_sub_label_above ) {
-			$routing_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_2_container' >
-                                    <label for='{$field_id}_2' id='{$field_id}_2_label' {$sub_label_class_attribute}>{$routing_number_label}</label>
+			$routing_field = "<span class='ginput_full{$class_suffix} gform-grid-col' id='{$field_id}_2_container' >
+                                    <label for='{$field_id}_2' id='{$field_id}_2_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$routing_number_label}</label>
                                     <input type='text' name='input_{$id}.2' id='{$field_id}_2' value='{$routing_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$routing_number_placeholder} {$routing_number_aria_attributes}/>
                                  </span>";
 		} else {
-			$routing_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_2_container' >
+			$routing_field = "<span class='ginput_full{$class_suffix} gform-grid-col' id='{$field_id}_2_container' >
                                     <input type='text' name='input_{$id}.2' id='{$field_id}_2' value='{$routing_number}' {$tabindex} {$disabled_text} {$onchange} {$onkeyup} {$autocomplete} {$html5_output} {$routing_number_placeholder} {$routing_number_aria_attributes}/>
-                                    <label for='{$field_id}_2' id='{$field_id}_2_label' {$sub_label_class_attribute}>{$routing_number_label}</label>
+                                    <label for='{$field_id}_2' id='{$field_id}_2_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$routing_number_label}</label>
                                  </span>";
 		}
 
@@ -310,23 +310,19 @@ class GF_Field_ACH extends GF_Field {
 
 		$account_name_placeholder = $this->get_input_placeholder_attribute( $account_name_field_input );
 		if ( $is_sub_label_above ) {
-			$account_name_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_4_container'>
-                                            <label for='{$field_id}_4' id='{$field_id}_4_label' {$sub_label_class_attribute}>{$account_name_label}</label>
+			$account_name_field = "<span class='ginput_full{$class_suffix} gform-grid-col' id='{$field_id}_4_container'>
+                                            <label for='{$field_id}_4' id='{$field_id}_4_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$account_name_label}</label>
                                             <input type='text' name='input_{$id}.4' id='{$field_id}_4' value='{$account_name}' {$tabindex} {$disabled_text} {$account_name_placeholder} {$account_name_aria_attributes}/>
                                         </span>";
 		} else {
-			$account_name_field = "<span class='ginput_full{$class_suffix}' id='{$field_id}_4_container'>
+			$account_name_field = "<span class='ginput_full{$class_suffix} gform-grid-col' id='{$field_id}_4_container'>
                                             <input type='text' name='input_{$id}.4' id='{$field_id}_4' value='{$account_name}' {$tabindex} {$disabled_text} {$account_name_placeholder} {$account_name_aria_attributes}/>
-                                            <label for='{$field_id}_4' id='{$field_id}_4_label' {$sub_label_class_attribute}>{$account_name_label}</label>
+                                            <label for='{$field_id}_4' id='{$field_id}_4_label' class='gform-field-label gform-field-label--type-sub {$sub_label_class}'>{$account_name_label}</label>
                                         </span>";
 		}
 
-		return "<div class='ginput_complex{$class_suffix} ginput_container ginput_container_ach' id='{$field_id}'>" . $account_field . $account_type_field . $routing_field . $account_name_field . ' </div>';
+		return "<div class='ginput_complex{$class_suffix} ginput_container ginput_container_ach gform-grid-row' id='{$field_id}'>" . $account_field . $account_type_field . $routing_field . $account_name_field . ' </div>';
 
-	}
-
-	public function get_field_label_class(){
-		return 'gfield_label gfield_label_before_complex';
 	}
 
 	public function get_value_entry_detail( $value, $currency = '', $use_text = false, $format = 'html', $media = 'screen' ) {
