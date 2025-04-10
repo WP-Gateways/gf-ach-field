@@ -8,7 +8,6 @@ Author: WP Gateways
 Author URI: https://wpgateways.com
 Text Domain: gf-ach-field
 Domain Path: /languages
-Requires Plugins: gravityforms
 
 	Copyright: © WP Gateways.
 	License: GNU General Public License v3.0
