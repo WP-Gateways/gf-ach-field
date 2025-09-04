@@ -342,9 +342,11 @@ class GF_Field_ACH extends GF_Field {
 
 	public function get_entry_inputs() {
 		$inputs = array();
-		// only store account type and number input values
+		//print_r($this->inputs);
+
+		// Store account type, number, routing, and account holder name input values
 		foreach ( $this->inputs as $input ) {
-			if ( in_array( $input['id'], array( $this->id . '.1', $this->id . '.2', $this->id . '.3' ) ) ) {
+			if ( in_array( $input['id'], array( $this->id . '.1', $this->id . '.2', $this->id . '.3', $this->id . '.4' ) ) ) {
 				$inputs[] = $input;
 			}
 		}

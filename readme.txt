@@ -6,7 +6,7 @@ Plugin URI: https://wpgateways.com/gravity-forms-ach-echeck-payments/
 Author URI: https://wpgateways.com  
 Requires at least: 4.0  
 Tested up to: 6.8  
-Stable tag: 1.0.3  
+Stable tag: 1.0.4  
 License: GNU General Public License v3.0  
 License URI: http://www.gnu.org/licenses/gpl-3.0.html  
 
@@ -56,6 +56,10 @@ Disclaimer: This plugin is not affiliated with or supported by Gravity Forms. Al
 
 
 == Changelog ==
+
+= 1.0.4 =
+
+* Saved account holder name input value
 
 = 1.0.3 =
 
