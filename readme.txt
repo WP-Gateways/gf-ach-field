@@ -60,6 +60,7 @@ Disclaimer: This plugin is not affiliated with or supported by Gravity Forms. Al
 = 1.0.4 =
 
 * Saved account holder name input value
+* Updated compatibility info to WordPress 6.9
 
 = 1.0.3 =
 
