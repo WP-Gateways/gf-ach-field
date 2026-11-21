@@ -1,3 +1,4 @@
 # Keep repository-only files out of release zips (git archive).
 /.gitattributes export-ignore
+/.github export-ignore
 /cubic.yaml export-ignore
